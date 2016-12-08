@@ -95,6 +95,13 @@ var initialData = {
 };
 
 /**
+ * Adds any desired indexes to the database.
+ */
+function addIndexes(db, cb) {
+  db.collection('feedItems').createIndex({ "contents.contents": "text" }, null, cb);
+}
+
+/**
  * Resets a collection.
  */
 function resetCollection(db, name, cb) {
@@ -130,7 +137,7 @@ function resetDatabase(db, cb) {
       // Use myself as a callback.
       resetCollection(db, collection, processNextCollection);
     } else {
-      cb();
+      addIndexes(db, cb);
     }
   }
 
