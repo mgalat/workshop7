@@ -2,7 +2,97 @@ var ObjectID = require('mongodb').ObjectID;
 
 var databaseName = "facebook";
 // Put the initial mock objects here.
-var initialData = null;
+var initialData = {
+  // The "user" collection. Contains all of the users in our Facebook system.
+  "users": {
+    // This user has id "1".
+    "1": {
+      "_id": new ObjectID("000000000000000000000001"),
+      "fullName": "Someone",
+      "feed": new ObjectID("000000000000000000000001")
+    },
+    "2": {
+      "_id": new ObjectID("000000000000000000000002"),
+      "fullName": "Someone Else",
+      "feed": new ObjectID("000000000000000000000002")
+    },
+    "3": {
+      "_id": new ObjectID("000000000000000000000003"),
+      "fullName": "Another Person",
+      "feed": new ObjectID("000000000000000000000003")
+    },
+    // This is "you"!
+    "4": {
+      "_id": new ObjectID("000000000000000000000004"),
+      "fullName": "John Vilk",
+      // ID of your feed.
+      "feed": new ObjectID("000000000000000000000004")
+    }
+  },
+  // The 'feedItems' collection. Contains all of the feed items on our Facebook
+  // system.
+  "feedItems": {
+    "1": {
+      "_id": new ObjectID("000000000000000000000001"),
+      "likeCounter": [
+        new ObjectID("000000000000000000000002"), new ObjectID("000000000000000000000003")
+      ],
+      "type": "statusUpdate",
+      "contents": {
+        "author": new ObjectID("000000000000000000000001"),
+        "postDate": 1453668480000,
+        "location": "Austin, TX",
+        "contents": "ugh."
+      },
+      "comments": [
+        {
+          "author": new ObjectID("000000000000000000000002"),
+          "contents": "hope everything is ok!",
+          "postDate": 1453690800000,
+          "likeCounter": []
+        },
+        {
+          "author": new ObjectID("000000000000000000000003"),
+          "contents": "sending hugs your way",
+          "postDate": 1453690800000,
+          "likeCounter": []
+        }
+      ]
+    },
+    "2": {
+      "_id": new ObjectID("000000000000000000000002"),
+      "likeCounter": [],
+      "type": "statusUpdate",
+      "contents": {
+        "author": new ObjectID("000000000000000000000004"),
+        "postDate": 1458231460117,
+        "location": "Philadelphia, PA",
+        "contents": "You can now edit and delete status updates!\nGo ahead and click the caret in the corner of the post."
+      },
+      "comments": []
+    }
+  },
+  // "feeds" collection. Feeds for each FB user.
+  "feeds": {
+    "4": {
+      "_id": new ObjectID("000000000000000000000004"),
+      // Listing of FeedItems in the feed.
+      "contents": [new ObjectID("000000000000000000000002"), new ObjectID("000000000000000000000001")]
+    },
+    "3": {
+      "_id": new ObjectID("000000000000000000000003"),
+      "contents": []
+    },
+    "2": {
+      "_id": new ObjectID("000000000000000000000002"),
+      "contents": []
+    },
+    "1": {
+      "_id": new ObjectID("000000000000000000000001"),
+      "contents": []
+    }
+  }
+};
 
 /**
  * Resets a collection.
@@ -29,7 +119,7 @@ function resetDatabase(db, cb) {
   // "for" loop over asynchronous operations.
   var collections = Object.keys(initialData);
   var i = 0;
-  
+
   // Processes the next collection in the collections array.
   // If we have finished processing all of the collections,
   // it triggers the callback.
@@ -43,7 +133,7 @@ function resetDatabase(db, cb) {
       cb();
     }
   }
-  
+
   // Start processing the first collection!
   processNextCollection();
 }
